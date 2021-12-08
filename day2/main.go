@@ -2,22 +2,10 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/steffantucker/AdventofCode2021/helpers"
+	"github.com/steffantucker/AdventofCode2021/submarine"
 )
-
-type submarine struct {
-	depth int
-	aim   int
-	horiz int
-}
-
-type instruction struct {
-	dir  int
-	dist int
-}
 
 func main() {
 	testinput := helpers.LoadInputLines("testinput")
@@ -27,44 +15,42 @@ func main() {
 	p1 := puzzle1(inputinput)
 	p2test := puzzle2(testinput)
 	p2 := puzzle2(inputinput)
-	fmt.Printf("test 1: %v\ninput 1: %v\ntest 2: %v\ninput 2: %v\n", p1test.calcHash(), p1.calcHash(), p2test.calcHash(), p2.calcHash())
+	fmt.Printf("test 1: %v\ninput 1: %v\ntest 2: %v\ninput 2: %v\n", p1test, p1, p2test, p2)
 }
 
-func (s submarine) calcHash() int {
-	return s.depth * s.horiz
+func puzzle1(input []string) int {
+	prog := submarine.NewSubmarineProgram(input)
+	prog.RegisterCommand("forward", Forward).RegisterCommand("up", Up).RegisterCommand("down", Down)
+	return prog.Run()
 }
 
-func puzzle1(input []string) (out submarine) {
-	for _, v := range input {
-		parts := strings.Split(v, " ")
-		dir := parts[0]
-		dist, _ := strconv.Atoi(parts[1])
-		switch dir {
-		case "forward":
-			out.horiz += dist
-		case "up":
-			out.depth -= dist
-		case "down":
-			out.depth += dist
-		}
-	}
-	return
+func Forward(s *submarine.Sub, dist int) {
+	s.Horizontal += dist
 }
 
-func puzzle2(input []string) (out submarine) {
-	for _, v := range input {
-		parts := strings.Split(v, " ")
-		dir := parts[0]
-		dist, _ := strconv.Atoi(parts[1])
-		switch dir {
-		case "forward":
-			out.horiz += dist
-			out.depth += (out.aim * dist)
-		case "up":
-			out.aim -= dist
-		case "down":
-			out.aim += dist
-		}
-	}
-	return
+func Up(s *submarine.Sub, dist int) {
+	s.Depth -= dist
+}
+
+func Down(s *submarine.Sub, dist int) {
+	s.Depth += dist
+}
+
+func puzzle2(input []string) int {
+	prog := submarine.NewSubmarineProgram(input)
+	prog.RegisterCommand("forward", Forward2).RegisterCommand("up", Up2).RegisterCommand("down", Down2)
+	return prog.Run()
+}
+
+func Forward2(s *submarine.Sub, dist int) {
+	s.Horizontal += dist
+	s.Depth += s.Aim * dist
+}
+
+func Up2(s *submarine.Sub, dist int) {
+	s.Aim -= dist
+}
+
+func Down2(s *submarine.Sub, dist int) {
+	s.Aim += dist
 }

@@ -1,6 +1,6 @@
-package sumbarine
+package submarine
 
 type Instructions struct {
-	Command string
+	Command  string
 	Distance int
 }
