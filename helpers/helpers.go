@@ -28,3 +28,8 @@ func LoadInputNumbers(f string) (lines []int) {
 	}
 	return
 }
+
+func MustAtoI(in string) int {
+	n, _ := strconv.Atoi(in)
+	return n
+}
